@@ -59,6 +59,45 @@ app.get("/posts/:id", (req, res) => {
   res.json(post);
 });
 
+// POST a new post
+app.post("/posts", (req, res) => {
+  const newId = (lastId += 1);
+  const post = {
+    id: newId,
+    title: req.body.title,
+    image: req.body.img,
+    content: req.body.content,
+    author: req.body.author,
+    date: new Date(),
+    link: req.body.link,
+  };
+  lastId = newId;
+  posts.push(post);
+  res.status(201).json(post);
+});
+
+// PATCH a post when you just want to update one parameter
+app.patch("/posts/:id", (req, res) => {
+  const post = posts.find((p) => p.id === parseInt(req.params.id));
+  if (!post) return res.status(404).json({ message: "Post not found" });
+
+  if (req.body.title) post.title = req.body.title;
+  if (req.body.img) post.img = req.body.img;
+  if (req.body.content) post.content = req.body.content;
+  if (req.body.author) post.author = req.body.author;
+  if (req.body.date) post.date = req.body.date;
+  res.json(post);
+});
+
+// DELETE a specific post by providing the post id
+app.delete("/posts/:id", (req, res) => {
+  const index = posts.findIndex((p) => p.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ message: "Post not found" });
+
+  posts.splice(index, 1);
+  res.json({ message: "Post deleted" });
+});
+
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);
 });

@@ -52,6 +52,13 @@ app.get("/posts", (req, res) => {
   res.json(posts);
 });
 
+// GET a specific post by id
+app.get("/posts/:id", (req, res) => {
+  const post = posts.find((p) => p.id === parseInt(req.params.id));
+  if (!post) return res.status(404).json({ message: "Post not found" });
+  res.json(post);
+});
+
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);
 });
